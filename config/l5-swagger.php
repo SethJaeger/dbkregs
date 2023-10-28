@@ -1,188 +1,300 @@
 <?php
 
-use Illuminate\Support\Facades\Facade;
-use Illuminate\Support\ServiceProvider;
-
 return [
+    'default' => 'default',
+    'documentations' => [
+        'default' => [
+            'api' => [
+                'title' => 'L5 Swagger UI',
+            ],
 
-    /*
-    |--------------------------------------------------------------------------
-    | Application Name
-    |--------------------------------------------------------------------------
-    |
-    | This value is the name of your application. This value is used when the
-    | framework needs to place the application's name in a notification or
-    | any other location as required by the application or its packages.
-    |
-    */
+            'routes' => [
+                /*
+                 * Route for accessing api documentation interface
+                */
+                'api' => 'api/documentation',
+            ],
+            'paths' => [
+                /*
+                 * Edit to include full URL in ui for assets
+                */
+                'use_absolute_path' => env('L5_SWAGGER_USE_ABSOLUTE_PATH', true),
 
-    'name' => env('APP_NAME', 'Laravel'),
+                /*
+                 * File name of the generated json documentation file
+                */
+                'docs_json' => 'api-docs.json',
 
-    /*
-    |--------------------------------------------------------------------------
-    | Application Environment
-    |--------------------------------------------------------------------------
-    |
-    | This value determines the "environment" your application is currently
-    | running in. This may determine how you prefer to configure various
-    | services the application utilizes. Set this in your ".env" file.
-    |
-    */
+                /*
+                 * File name of the generated YAML documentation file
+                */
+                'docs_yaml' => 'api-docs.yaml',
 
-    'env' => env('APP_ENV', 'production'),
+                /*
+                * Set this to `json` or `yaml` to determine which documentation file to use in UI
+                */
+                'format_to_use_for_docs' => env('L5_FORMAT_TO_USE_FOR_DOCS', 'json'),
 
-    /*
-    |--------------------------------------------------------------------------
-    | Application Debug Mode
-    |--------------------------------------------------------------------------
-    |
-    | When your application is in debug mode, detailed error messages with
-    | stack traces will be shown on every error that occurs within your
-    | application. If disabled, a simple generic error page is shown.
-    |
-    */
+                /*
+                 * Absolute paths to directory containing the swagger annotations are stored.
+                */
+                'annotations' => [
+                    base_path('app'),
+                ],
 
-    'debug' => (bool) env('APP_DEBUG', false),
-
-    /*
-    |--------------------------------------------------------------------------
-    | Application URL
-    |--------------------------------------------------------------------------
-    |
-    | This URL is used by the console to properly generate URLs when using
-    | the Artisan command line tool. You should set this to the root of
-    | your application so that it is used when running Artisan tasks.
-    |
-    */
-
-    'url' => env('APP_URL', 'http://localhost'),
-
-    'asset_url' => env('ASSET_URL'),
-
-    /*
-    |--------------------------------------------------------------------------
-    | Application Timezone
-    |--------------------------------------------------------------------------
-    |
-    | Here you may specify the default timezone for your application, which
-    | will be used by the PHP date and date-time functions. We have gone
-    | ahead and set this to a sensible default for you out of the box.
-    |
-    */
-
-    'timezone' => 'UTC',
-
-    /*
-    |--------------------------------------------------------------------------
-    | Application Locale Configuration
-    |--------------------------------------------------------------------------
-    |
-    | The application locale determines the default locale that will be used
-    | by the translation service provider. You are free to set this value
-    | to any of the locales which will be supported by the application.
-    |
-    */
-
-    'locale' => 'en',
-
-    /*
-    |--------------------------------------------------------------------------
-    | Application Fallback Locale
-    |--------------------------------------------------------------------------
-    |
-    | The fallback locale determines the locale to use when the current one
-    | is not available. You may change the value to correspond to any of
-    | the language folders that are provided through your application.
-    |
-    */
-
-    'fallback_locale' => 'en',
-
-    /*
-    |--------------------------------------------------------------------------
-    | Faker Locale
-    |--------------------------------------------------------------------------
-    |
-    | This locale will be used by the Faker PHP library when generating fake
-    | data for your database seeds. For example, this will be used to get
-    | localized telephone numbers, street address information and more.
-    |
-    */
-
-    'faker_locale' => 'en_US',
-
-    /*
-    |--------------------------------------------------------------------------
-    | Encryption Key
-    |--------------------------------------------------------------------------
-    |
-    | This key is used by the Illuminate encrypter service and should be set
-    | to a random, 32 character string, otherwise these encrypted strings
-    | will not be safe. Please do this before deploying an application!
-    |
-    */
-
-    'key' => env('APP_KEY'),
-
-    'cipher' => 'AES-256-CBC',
-
-    /*
-    |--------------------------------------------------------------------------
-    | Maintenance Mode Driver
-    |--------------------------------------------------------------------------
-    |
-    | These configuration options determine the driver used to determine and
-    | manage Laravel's "maintenance mode" status. The "cache" driver will
-    | allow maintenance mode to be controlled across multiple machines.
-    |
-    | Supported drivers: "file", "cache"
-    |
-    */
-
-    'maintenance' => [
-        'driver' => 'file',
-        // 'store'  => 'redis',
+            ],
+        ],
     ],
+    'defaults' => [
+        'routes' => [
+            /*
+             * Route for accessing parsed swagger annotations.
+            */
+            'docs' => 'docs',
 
-    /*
-    |--------------------------------------------------------------------------
-    | Autoloaded Service Providers
-    |--------------------------------------------------------------------------
-    |
-    | The service providers listed here will be automatically loaded on the
-    | request to your application. Feel free to add your own services to
-    | this array to grant expanded functionality to your applications.
-    |
-    */
+            /*
+             * Route for Oauth2 authentication callback.
+            */
+            'oauth2_callback' => 'api/oauth2-callback',
 
-    'providers' => ServiceProvider::defaultProviders()->merge([
+            /*
+             * Middleware allows to prevent unexpected access to API documentation
+            */
+            'middleware' => [
+                'api' => [],
+                'asset' => [],
+                'docs' => [],
+                'oauth2_callback' => [],
+            ],
+
+            /*
+             * Route Group options
+            */
+            'group_options' => [],
+        ],
+
+        'paths' => [
+            /*
+             * Absolute path to location where parsed annotations will be stored
+            */
+            'docs' => storage_path('api-docs'),
+
+            /*
+             * Absolute path to directory where to export views
+            */
+            'views' => base_path('resources/views/vendor/l5-swagger'),
+
+            /*
+             * Edit to set the api's base path
+            */
+            'base' => env('L5_SWAGGER_BASE_PATH', null),
+
+            /*
+             * Edit to set path where swagger ui assets should be stored
+            */
+            'swagger_ui_assets_path' => env('L5_SWAGGER_UI_ASSETS_PATH', 'vendor/swagger-api/swagger-ui/dist/'),
+
+            /*
+             * Absolute path to directories that should be exclude from scanning
+             * @deprecated Please use `scanOptions.exclude`
+             * `scanOptions.exclude` overwrites this
+            */
+            'excludes' => [],
+        ],
+
+        'scanOptions' => [
+            /**
+             * analyser: defaults to \OpenApi\StaticAnalyser .
+             *
+             * @see \OpenApi\scan
+             */
+            'analyser' => null,
+
+            /**
+             * analysis: defaults to a new \OpenApi\Analysis .
+             *
+             * @see \OpenApi\scan
+             */
+            'analysis' => null,
+
+            /**
+             * Custom query path processors classes.
+             *
+             * @link https://github.com/zircote/swagger-php/tree/master/Examples/schema-query-parameter-processor
+             * @see \OpenApi\scan
+             */
+            'processors' => [
+                // new \App\SwaggerProcessors\SchemaQueryParameter(),
+            ],
+
+            /**
+             * pattern: string       $pattern File pattern(s) to scan (default: *.php) .
+             *
+             * @see \OpenApi\scan
+             */
+            'pattern' => null,
+
+            /*
+             * Absolute path to directories that should be excluded from scanning
+             * @note This option overwrites `paths.excludes`
+             * @see \OpenApi\scan
+            */
+            'exclude' => [],
+
+            /*
+             * Allows to generate specs either for OpenAPI 3.0.0 or OpenAPI 3.1.0.
+             * By default the spec will be in version 3.0.0
+             */
+            'open_api_spec_version' => env('L5_SWAGGER_OPEN_API_SPEC_VERSION', \L5Swagger\Generator::OPEN_API_DEFAULT_SPEC_VERSION),
+        ],
+
         /*
-         * Package Service Providers...
-         */
+         * API security definitions. Will be generated into documentation file.
+        */
+        'securityDefinitions' => [
+            'securitySchemes' => [
+                /*
+                 * Examples of Security schemes
+                */
+                /*
+                'api_key_security_example' => [ // Unique name of security
+                    'type' => 'apiKey', // The type of the security scheme. Valid values are "basic", "apiKey" or "oauth2".
+                    'description' => 'A short description for security scheme',
+                    'name' => 'api_key', // The name of the header or query parameter to be used.
+                    'in' => 'header', // The location of the API key. Valid values are "query" or "header".
+                ],
+                'oauth2_security_example' => [ // Unique name of security
+                    'type' => 'oauth2', // The type of the security scheme. Valid values are "basic", "apiKey" or "oauth2".
+                    'description' => 'A short description for oauth2 security scheme.',
+                    'flow' => 'implicit', // The flow used by the OAuth2 security scheme. Valid values are "implicit", "password", "application" or "accessCode".
+                    'authorizationUrl' => 'http://example.com/auth', // The authorization URL to be used for (implicit/accessCode)
+                    //'tokenUrl' => 'http://example.com/auth' // The authorization URL to be used for (password/application/accessCode)
+                    'scopes' => [
+                        'read:projects' => 'read your projects',
+                        'write:projects' => 'modify projects in your account',
+                    ]
+                ],
+                */
+
+                /* Open API 3.0 support
+                'passport' => [ // Unique name of security
+                    'type' => 'oauth2', // The type of the security scheme. Valid values are "basic", "apiKey" or "oauth2".
+                    'description' => 'Laravel passport oauth2 security.',
+                    'in' => 'header',
+                    'scheme' => 'https',
+                    'flows' => [
+                        "password" => [
+                            "authorizationUrl" => config('app.url') . '/oauth/authorize',
+                            "tokenUrl" => config('app.url') . '/oauth/token',
+                            "refreshUrl" => config('app.url') . '/token/refresh',
+                            "scopes" => []
+                        ],
+                    ],
+                ],
+                'sanctum' => [ // Unique name of security
+                    'type' => 'apiKey', // Valid values are "basic", "apiKey" or "oauth2".
+                    'description' => 'Enter token in format (Bearer <token>)',
+                    'name' => 'Authorization', // The name of the header or query parameter to be used.
+                    'in' => 'header', // The location of the API key. Valid values are "query" or "header".
+                ],
+                */
+            ],
+            'security' => [
+                /*
+                 * Examples of Securities
+                */
+                [
+                    /*
+                    'oauth2_security_example' => [
+                        'read',
+                        'write'
+                    ],
+
+                    'passport' => []
+                    */
+                ],
+            ],
+        ],
 
         /*
-         * Application Service Providers...
+         * Set this to `true` in development mode so that docs would be regenerated on each request
+         * Set this to `false` to disable swagger generation on production
+        */
+        'generate_always' => env('L5_SWAGGER_GENERATE_ALWAYS', true),
+
+        /*
+         * Set this to `true` to generate a copy of documentation in yaml format
+        */
+        'generate_yaml_copy' => env('L5_SWAGGER_GENERATE_YAML_COPY', false),
+
+        /*
+         * Edit to trust the proxy's ip address - needed for AWS Load Balancer
+         * string[]
+        */
+        'proxy' => false,
+
+        /*
+         * Configs plugin allows to fetch external configs instead of passing them to SwaggerUIBundle.
+         * See more at: https://github.com/swagger-api/swagger-ui#configs-plugin
+        */
+        'additional_config_url' => null,
+
+        /*
+         * Apply a sort to the operation list of each API. It can be 'alpha' (sort by paths alphanumerically),
+         * 'method' (sort by HTTP method).
+         * Default is the order returned by the server unchanged.
+        */
+        'operations_sort' => env('L5_SWAGGER_OPERATIONS_SORT', null),
+
+        /*
+         * Pass the validatorUrl parameter to SwaggerUi init on the JS side.
+         * A null value here disables validation.
+        */
+        'validator_url' => null,
+
+        /*
+         * Swagger UI configuration parameters
+        */
+        'ui' => [
+            'display' => [
+                /*
+                 * Controls the default expansion setting for the operations and tags. It can be :
+                 * 'list' (expands only the tags),
+                 * 'full' (expands the tags and operations),
+                 * 'none' (expands nothing).
+                 */
+                'doc_expansion' => env('L5_SWAGGER_UI_DOC_EXPANSION', 'none'),
+
+                /**
+                 * If set, enables filtering. The top bar will show an edit box that
+                 * you can use to filter the tagged operations that are shown. Can be
+                 * Boolean to enable or disable, or a string, in which case filtering
+                 * will be enabled using that string as the filter expression. Filtering
+                 * is case-sensitive matching the filter expression anywhere inside
+                 * the tag.
+                 */
+                'filter' => env('L5_SWAGGER_UI_FILTERS', true), // true | false
+            ],
+
+            'authorization' => [
+                /*
+                 * If set to true, it persists authorization data, and it would not be lost on browser close/refresh
+                 */
+                'persist_authorization' => env('L5_SWAGGER_UI_PERSIST_AUTHORIZATION', false),
+
+                'oauth2' => [
+                    /*
+                    * If set to true, adds PKCE to AuthorizationCodeGrant flow
+                    */
+                    'use_pkce_with_authorization_code_grant' => false,
+                ],
+            ],
+        ],
+        /*
+         * Constants which can be used in annotations
          */
-        App\Providers\AppServiceProvider::class,
-        App\Providers\AuthServiceProvider::class,
-        // App\Providers\BroadcastServiceProvider::class,
-        App\Providers\EventServiceProvider::class,
-        App\Providers\RouteServiceProvider::class,
-    ])->toArray(),
-
-    /*
-    |--------------------------------------------------------------------------
-    | Class Aliases
-    |--------------------------------------------------------------------------
-    |
-    | This array of class aliases will be registered when this application
-    | is started. However, feel free to register as many as you wish as
-    | the aliases are "lazy" loaded so they don't hinder performance.
-    |
-    */
-
-    'aliases' => Facade::defaultAliases()->merge([
-        // 'Example' => App\Facades\Example::class,
-    ])->toArray(),
-
+        'constants' => [
+            'L5_SWAGGER_CONST_HOST' => env('L5_SWAGGER_CONST_HOST', 'http://my-default-host.com'),
+        ],
+    ],
 ];

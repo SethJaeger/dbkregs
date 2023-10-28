@@ -16,6 +16,16 @@ use App\Http\Controllers\PaisController;
 |
 */
 
+/**
+	* @OA\Get(
+    *     path="/api/ejecutar",
+    *     summary="informacion breve del endpoint desde el route",
+    *     @OA\Response(response="200", description="List of users"),
+    * )
+    */
+
+Route::get('/ejecutar', ['RespuestaController::class,index']);
+
 Route::post("/nuevo",[PaisController::class,"crearPais"]);
 
 Route::get("/obtener",[PaisController::class,"obtener"]);
