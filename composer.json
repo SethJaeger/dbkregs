@@ -1,4 +1,5 @@
-"name": "DBKREGS",
+{
+    "name": "DBKREGS",
     "lockfileVersion": 2,
     "requires": true,
     "packages": {
