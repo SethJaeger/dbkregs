@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\PaisController;
+use App\Http\Controllers\AutorController;
 
 /*
 |--------------------------------------------------------------------------
@@ -29,6 +30,8 @@ Route::get('/ejecutar', ['RespuestaController::class,index']);
 Route::post("/nuevo",[PaisController::class,"crearPais"]);
 
 Route::get("/obtener",[PaisController::class,"obtener"]);
+
+Route::get('/autores',[AutorController::class,'obtenerAutores']);
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
